@@ -1,480 +1,743 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <title>Maddhav Suneja</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="img/me-big.png" type="image/x-icon">
-  <link rel="stylesheet" href="css/main.bundle.css">
-  <script src="https://kit.fontawesome.com/4e5a72c756.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maddhav Suneja — Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --bg2: #111111;
+      --fg: #f2f2f2;
+      --fg-dim: #888;
+      --fg-dimmer: #444;
+      --accent: #ffffff;
+      --prompt: #f2f2f2;
+      --cursor: #f2f2f2;
+      --green: #7fff87;
+      --blue: #7ec8e3;
+      --yellow: #ffd97d;
+      --red: #ff6b6b;
+      --pink: #e8b4e8;
+      --border: #2a2a2a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── Window Chrome ── */
+    .window {
+      max-width: 860px;
+      margin: 40px auto 80px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8);
+    }
+
+    .titlebar {
+      background: #1c1c1c;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot-red   { background: #ff5f57; }
+    .dot-yellow{ background: #febc2e; }
+    .dot-green { background: #28c840; }
+
+    .titlebar-label {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--fg-dim);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Terminal Body ── */
+    .terminal {
+      background: var(--bg);
+      padding: 28px 32px 40px;
+      min-height: 600px;
+    }
+
+    /* ── Sections ── */
+    .section { margin-bottom: 48px; }
+
+    /* ── Prompt line ── */
+    .prompt-line {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .prompt-user  { color: var(--green);  font-weight: 700; }
+    .prompt-at    { color: var(--fg-dim); }
+    .prompt-host  { color: var(--blue);   font-weight: 700; }
+    .prompt-colon { color: var(--fg-dim); }
+    .prompt-path  { color: var(--yellow); }
+    .prompt-dollar{ color: var(--fg-dim); margin: 0 6px; }
+    .prompt-cmd   { color: var(--fg);     }
+
+    /* ── Output blocks ── */
+    .output {
+      padding-left: 0;
+      margin-bottom: 4px;
+    }
+
+    .output p  { color: var(--fg); margin-bottom: 6px; }
+    .output .dim{ color: var(--fg-dim); }
+
+    /* banner */
+    .banner {
+      color: var(--fg);
+      white-space: pre;
+      font-size: 11px;
+      line-height: 1.3;
+      margin-bottom: 20px;
+      letter-spacing: 0.02em;
+    }
+
+    .sysinfo {
+      margin-bottom: 28px;
+    }
+    .sysinfo span.label { color: var(--blue); }
+    .sysinfo span.value { color: var(--fg);   }
+
+    /* ── About ── */
+    .about-text {
+      color: var(--fg);
+      max-width: 620px;
+      margin-bottom: 8px;
+    }
+    .about-text em { color: var(--yellow); font-style: normal; }
+
+    /* ── Skills ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 4px;
+    }
+    .skill-group {}
+    .skill-group .skill-cat {
+      color: var(--blue);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .skill-tag {
+      display: inline-block;
+      color: var(--green);
+      margin-right: 8px;
+      line-height: 1.8;
+    }
+    .skill-tag::before { content: "▸ "; color: var(--fg-dimmer); }
+
+    /* ── Projects ── */
+    .project {
+      border-left: 2px solid var(--border);
+      padding-left: 16px;
+      margin-bottom: 36px;
+      transition: border-color 0.2s;
+    }
+    .project:hover { border-left-color: var(--fg-dim); }
+
+    .project-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 4px;
+    }
+    .project-name  { color: var(--yellow); font-weight: 700; font-size: 15px; }
+    .project-tech  { color: var(--pink);   font-size: 11px; }
+    .project-link  { color: var(--blue);   font-size: 11px; text-decoration: none; }
+    .project-link:hover { text-decoration: underline; }
+    .project-desc  { color: var(--fg-dim); font-size: 13px; }
+    .project-bullets { list-style: none; margin-top: 6px; }
+    .project-bullets li { color: var(--fg); font-size: 13px; padding-left: 14px; position: relative; margin-bottom: 2px; }
+    .project-bullets li::before { content: "–"; position: absolute; left: 0; color: var(--fg-dimmer); }
+
+    /* ── Project Image ── */
+    .project-img-wrap {
+      margin-top: 14px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      background: #0a0a0a;
+      max-width: 580px;
+    }
+    .project-img-bar {
+      background: #1a1a1a;
+      border-bottom: 1px solid var(--border);
+      padding: 5px 10px;
+      font-size: 10px;
+      color: var(--fg-dimmer);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .project-img-bar span { color: var(--fg-dim); }
+    .project-img-wrap img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 300px;
+      object-fit: cover;
+      filter: brightness(0.92) contrast(1.05);
+      transition: filter 0.3s, transform 0.3s;
+      cursor: zoom-in;
+    }
+    .project-img-wrap img:hover {
+      filter: brightness(1) contrast(1.08);
+      transform: scale(1.01);
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 88vh;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      box-shadow: 0 0 80px rgba(0,0,0,0.9);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px; right: 28px;
+      color: var(--fg-dim);
+      font-size: 22px;
+      cursor: pointer;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .lightbox-close:hover { color: var(--fg); }
+
+    /* ── Education ── */
+    .edu-entry {
+      margin-bottom: 24px;
+    }
+    .edu-header { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px; }
+    .edu-school { color: var(--yellow); font-weight: 700; }
+    .edu-year   { color: var(--fg-dim); font-size: 12px; }
+    .edu-degree { color: var(--fg); margin-top: 2px; }
+    .edu-detail { color: var(--fg-dim); font-size: 12px; margin-top: 2px; }
+
+    /* ── Contact ── */
+    .contact-list { list-style: none; }
+    .contact-list li {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .contact-list .c-label { color: var(--blue); min-width: 80px; }
+    .contact-list a { color: var(--fg); text-decoration: none; }
+    .contact-list a:hover { color: var(--yellow); }
+
+    /* ── Cursor blink ── */
+    .cursor {
+      display: inline-block;
+      width: 9px; height: 16px;
+      background: var(--cursor);
+      vertical-align: middle;
+      margin-left: 2px;
+      animation: blink 1.1s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* ── Divider ── */
+    .rule {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    /* ── Animations ── */
+    .section {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeUp 0.5s ease forwards;
+    }
+    .section:nth-child(1)  { animation-delay: 0.05s; }
+    .section:nth-child(2)  { animation-delay: 0.15s; }
+    .section:nth-child(3)  { animation-delay: 0.25s; }
+    .section:nth-child(4)  { animation-delay: 0.35s; }
+    .section:nth-child(5)  { animation-delay: 0.45s; }
+    .section:nth-child(6)  { animation-delay: 0.55s; }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── CRT Scanlines overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.13) 3px,
+        rgba(0,0,0,0.13) 4px
+      );
+    }
+
+    /* subtle vignette */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center,
+        transparent 60%,
+        rgba(0,0,0,0.45) 100%
+      );
+    }
+
+    /* very subtle screen flicker */
+    @keyframes flicker {
+      0%,100% { opacity: 1; }
+      92%      { opacity: 1; }
+      93%      { opacity: 0.96; }
+      94%      { opacity: 1; }
+      96%      { opacity: 0.98; }
+      97%      { opacity: 1; }
+    }
+    .terminal { animation: flicker 8s infinite; }
+
+    /* ── ASCII portrait ── */
+    .ascii-wrap {
+      margin-bottom: 24px;
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .ascii-portrait {
+      font-size: 7.2px;
+      line-height: 1.35;
+      color: var(--fg-dim);
+      white-space: pre;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.06em;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      background: #0a0a0a;
+      border-radius: 3px;
+      transition: color 0.4s;
+    }
+    .ascii-portrait:hover { color: var(--fg); }
+    .ascii-caption {
+      font-size: 10px;
+      color: var(--fg-dimmer);
+      margin-top: 4px;
+      text-align: center;
+    }
+    .ascii-side {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ── Nav (optional quick-jump) ── */
+    .nav-hint {
+      color: var(--fg-dimmer);
+      font-size: 11px;
+      margin-bottom: 24px;
+    }
+    .nav-hint span { color: var(--fg-dim); cursor: pointer; margin-right: 12px; }
+    .nav-hint span:hover { color: var(--yellow); }
+
+    /* responsive */
+    @media(max-width:600px) {
+      .window { margin: 0; border-radius: 0; border: none; }
+      .terminal { padding: 20px 18px 40px; }
+      .banner { font-size: 8px; }
+    }
+  </style>
 </head>
-<style>
-  /* Styling the <hr /> */
-  hr {
-    border: 0;
-    border-top: 1px solid #c9c8c8; /* Change this to your desired color */
-    margin: 20px 0;
-    transition: border-color 0.3s ease;
-  }
-
-</style>
-
 <body>
-  <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand">
-      <div class="navbar-item is-hidden-desktop">
-        <a href="https://github.com/maddii28" class="icon is-large has-text-light">
-          <i class="fab fa-2x fa-github"></i>
-        </a>
-      </div>
-    </div>
-    <div class="navbar-menu">
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <a href="https://github.com/maddii28" class="icon is-large has-text-light">
-            <i class="fab fa-2x fa-github"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-  </nav>
 
-<!-- Hero Section -->
-<section class="hero is-primary">
-  <div class="hero-body">
-    <div class="container">
-      <div class="level">
-        <div class="level-item has-text-centered">
-          <figure class="image is-128x128">
-            <img class="is-rounded" src="img/me-big.png" alt="Maddhav Suneja">
-          </figure>
-        </div>
-      </div>
-      <div class="columns has-text-centered">
-        <div class="column">
-          <h1 class="title is-1">
-            Maddhav Suneja
-          </h1>
-          <h2 class="subtitle">
-            <span id="dynamic-text"></span> <!-- Dynamic text here -->
-          </h2>
-          <p>
-            <a href="docs/Maddhav_Resume.pdf" class="icon has-text-light" download>
-              <i class="fas fa-file-pdf"></i> <strong>Resume</strong>
-            </a>
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Your CSS -->
-<style>
-  /* Dynamic text styling */
-  #dynamic-text {
-    color: #ffffff; /* Highlighted text color */
-    font-weight: bold;
-    border-right: 2px solid white; /* Cursor effect */
-    padding-right: 5px;
-    animation: blink 0.7s step-start infinite;
-  }
-
-  /* Cursor blink effect */
-  @keyframes blink {
-    50% {
-      border-color: transparent;
-    }
-  }
-</style>
-
-<!-- Your JavaScript for dynamic text -->
-<script>
-  // Dynamic text animation
-  const dynamicText = document.getElementById("dynamic-text");
-  const titles = ["Software Engineer", "ML-Enthusiast", "Even an Avid Hiker :)"];
-  let currentIndex = 0;
-  let currentText = "";
-  let isDeleting = false;
-  let typingSpeed = 150;
-  let pause = 2000;
-
-  function typeEffect() {
-    // Full text of the current title
-    const fullText = titles[currentIndex];
-
-    // Typing or deleting logic
-    if (isDeleting) {
-        currentText = fullText.substring(0, currentText.length - 1); // Remove a character
-    } else {
-        currentText = fullText.substring(0, currentText.length + 1); // Add a character
-    }
-
-    // Update the text content in the DOM
-    dynamicText.textContent = currentText;
-
-    // Handle typing and deleting state transitions
-    if (!isDeleting && currentText === fullText) {
-        // Full title has been typed; pause, then start deleting
-        setTimeout(() => {
-            isDeleting = true;
-            typeEffect();
-        }, pause);
-        return;
-    } else if (isDeleting && currentText === "") {
-        // Finished deleting; move to the next title
-        isDeleting = false;
-        currentIndex = (currentIndex + 1) % titles.length; // Strictly increment in linear order
-    }
-
-    // Adjust speed for typing and deleting
-    const delay = isDeleting ? typingSpeed / 2 : typingSpeed;
-    setTimeout(typeEffect, delay);
-}
-
-// Start the typing effect
-typeEffect();
-</script>
-
-  <section class="section">
-    <div class="container">
-      <h1 class="title">About Me</h1>
-      <hr />
-      <p>Hi, I'm Maddhav Suneja, a Computer Science major at New York University, with minors in Mathematics and Data Science. I'm passionate about developing creative solutions to real-world challenges through technology.
-        My work includes projects like Finlitify, a financial literacy platform that earned the Best WolframAlpha Hack Award at HackNYU 2023, and Lockabox, a smart lockbox incorporating text-recognition technology to balance focus and accessibility. Currently, I'm building QRaven, which leverages Flask and machine learning to generate dynamic QR codes with advanced analytics. 
-        I'm continuously honing my skills in machine learning, AI, and backend development, striving to create impactful, user-centered applications.</p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <h1 class="title">Software Projects</h1>
-      <hr />
-      <style>
-        /* Embedded CSS for hover effect */
-        .tile.is-parent .notification {
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-          transition: all 0.3s ease; /* Smooth hover effect */
-          background-color: hsla(0, 5%, 92%, 0.75); /* White background for contrast */
-          padding: 15px;
-        }
-  
-        .tile.is-parent:hover .notification {
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow */
-          transform: translateY(-5px); /* Lift effect */
-          background-color: hsla(0, 3%, 88%, 0.9); /* Slightly lighter background */
-        }
-  
-        .tile.is-parent .notification img {
-          width: 100%;
-          height: auto;
-        }
-      </style>
-      <div class="tile is-ancestor">
-        <div class="tile is-vertical is-12">
-          <div class="tile">
-            <div class="tile is-parent">
-              <article class="tile is-child notification">
-                <p class="title">Finlitify</p>
-                <figure class="image is-3by2">
-                  <img class="modal-trigger" data-target="project-1-modal" src="img/project-1-cover.png" alt="Finlitify">
-                </figure>
-              </article>
-            </div>
-            <div class="tile is-parent">
-              <article class="tile is-child notification">
-                <p class="title">Lockabox</p>
-                <figure class="image is-4by3">
-                  <img class="modal-trigger" data-target="project-2-modal" src="img/project-2-cover.png" alt="Lockabox">
-                </figure>
-              </article>
-            </div>
-            <div class="tile is-parent">
-              <article class="tile is-child notification">
-                <p class="title">QRaven</p>
-                <figure class="image is-4by3">
-                  <img class="modal-trigger" data-target="project-3-modal" src="img/project-3-cover.png" alt="QRaven">
-                </figure>
-              </article>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <h1 class="title">3D Designs</h1>
-      <hr />
-      <style>
-        /* Embedded CSS for hover effect */
-        .tile.is-parent .notification {
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-          transition: all 0.3s ease; /* Smooth hover effect */
-          background-color: hsla(0, 5%, 92%, 0.75); /* White background for contrast */
-          padding: 15px;
-        }
-  
-        .tile.is-parent:hover .notification {
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow */
-          transform: translateY(-5px); /* Lift effect */
-          background-color: hsla(0, 3%, 88%, 0.9); /* Slightly lighter background */
-        }
-  
-        .tile.is-parent .notification img {
-          width: 100%;
-          height: auto;
-        }
-      </style>
-      <div class="tile is-ancestor">
-        <div class="tile is-vertical is-12">
-          <div class="tile">
-            <div class="tile is-parent">
-              <article class="tile is-child notification">
-                <figure class="image is-3by2" style="width: 100%; height: 100%;">
-                  <img class="modal-trigger" data-target="project-4-modal" 
-                       src="img/1.jpg" 
-                       style="width: 100%; height: 100%; object-fit: contain;">
-                </figure>                
-              </article>
-            </div>
-            <div class="tile is-parent">
-              <article class="tile is-child notification">
-                <figure class="image is-4by3" style="width: 100%; height: 100%;">
-                  <img class="modal-trigger" data-target="project-5-modal" 
-                       src="img/4.jpg" 
-                       style="width: 100%; height: 100%; object-fit: contain;">
-                </figure> 
-              </article>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-<!-- Skills Section -->
-<section class="section">
-  <div class="container">
-    <h2 class = "title">Skills & Technologies</h2>
-    <hr />
-    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 40px;">
-
-      <!-- Skill 1: Python -->
-      <div class="skill-logo" style="text-align: center; flex: 1 1 150px; max-width: 180px; padding: 20px; background-color: hsla(0, 3%, 92%, 0.75); border-radius: 8px; transition: transform 0.3s ease; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/python.svg" alt="Python" style="width: 60px; height: 60px; margin-bottom: 10px;">
-        <p style="color: #333; font-weight: 600; font-size: 1.1rem;">Python</p>
-      </div>
-
-      <!-- Skill 2: Flask -->
-      <div class="skill-logo" style="text-align: center; flex: 1 1 150px; max-width: 180px; padding: 20px; background-color: hsla(0, 3%, 92%, 0.75); border-radius: 8px; transition: transform 0.3s ease; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/flask.svg" alt="Flask" style="width: 60px; height: 60px; margin-bottom: 10px;">
-        <p style="color: #333; font-weight: 600; font-size: 1.1rem;">Flask</p>
-      </div>
-
-      <!-- Skill 3: SQL -->
-      <div class="skill-logo" style="text-align: center; flex: 1 1 150px; max-width: 180px; padding: 20px; background-color: hsla(0, 3%, 92%, 0.75); border-radius: 8px; transition: transform 0.3s ease; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/mysql.svg" alt="SQL" style="width: 60px; height: 60px; margin-bottom: 10px;">
-        <p style="color: #333; font-weight: 600; font-size: 1.1rem;">SQL</p>
-      </div>
-
-      <!-- Skill 4: HTML -->
-      <div class="skill-logo" style="text-align: center; flex: 1 1 150px; max-width: 180px; padding: 20px; background-color: hsla(0, 3%, 92%, 0.75); border-radius: 8px; transition: transform 0.3s ease; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/html5.svg" alt="HTML" style="width: 60px; height: 60px; margin-bottom: 10px;">
-        <p style="color: #333; font-weight: 600; font-size: 1.1rem;">HTML</p>
-      </div>
-
-      <!-- Skill 5: CSS -->
-      <div class="skill-logo" style="text-align: center; flex: 1 1 150px; max-width: 180px; padding: 20px; background-color: hsla(0, 3%, 92%, 0.75); border-radius: 8px; transition: transform 0.3s ease; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/css3.svg" alt="CSS" style="width: 60px; height: 60px; margin-bottom: 10px;">
-        <p style="color: #333; font-weight: 600; font-size: 1.1rem;">CSS</p>
-      </div>
-
-      <!-- Skill 6: Git -->
-      <div class="skill-logo" style="text-align: center; flex: 1 1 150px; max-width: 180px; padding: 20px; background-color: hsla(0, 3%, 92%, 0.75); border-radius: 8px; transition: transform 0.3s ease; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/git.svg" alt="Git" style="width: 60px; height: 60px; margin-bottom: 10px;">
-        <p style="color: #333; font-weight: 600; font-size: 1.1rem;">Git</p>
-      </div>
-
-      <!-- Skill 7: C++ -->
-      <div class="skill-logo" style="text-align: center; flex: 1 1 150px; max-width: 180px; padding: 20px; background-color: hsla(0, 3%, 92%, 0.75); border-radius: 8px; transition: transform 0.3s ease; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/cplusplus.svg" alt="C++" style="width: 60px; height: 60px; margin-bottom: 10px;">
-        <p style="color: #333; font-weight: 600; font-size: 1.1rem;">C++</p>
-      </div>
-
-      <!-- Skill 8: NumPy -->
-      <div class="skill-logo" style="text-align: center; flex: 1 1 150px; max-width: 180px; padding: 20px; background-color: hsla(0, 3%, 92%, 0.75); border-radius: 8px; transition: transform 0.3s ease; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/numpy.svg" alt="NumPy" style="width: 60px; height: 60px; margin-bottom: 10px;">
-        <p style="color: #333; font-weight: 600; font-size: 1.1rem;">NumPy</p>
-      </div>
-
-      <!-- Skill 9: Pandas -->
-      <div class="skill-logo" style="text-align: center; flex: 1 1 150px; max-width: 180px; padding: 20px; background-color: hsla(0, 3%, 92%, 0.75); border-radius: 8px; transition: transform 0.3s ease; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/pandas.svg" alt="Pandas" style="width: 60px; height: 60px; margin-bottom: 10px;">
-        <p style="color: #333; font-weight: 600; font-size: 1.1rem;">Pandas</p>
-      </div>
-
-      <!-- Skill 10: R -->
-      <div class="skill-logo" style="text-align: center; flex: 1 1 150px; max-width: 180px; padding: 20px; background-color: hsla(0, 3%, 92%, 0.75); border-radius: 8px; transition: transform 0.3s ease; cursor: pointer; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);">
-        <img src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/r.svg" alt="R" style="width: 60px; height: 60px; margin-bottom: 10px;">
-        <p style="color: #333; font-weight: 600; font-size: 1.1rem;">R</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- Hover Effect Style -->
-<style>
-  .skill-logo:hover {
-    transform: scale(1.1);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* Adds a larger shadow on hover */
-  }
-</style>
-
-
-  <section class="section">
-    <div class="container">
-      <h1 class="title">Educational Qualification</h1>
-      <hr />
-      <div class="card">
-        <div class="card-content">
-          <div class="content">
-            <p class="title is-4">New York University</p>
-            <p class="subtitle is-6">Bachelor of Science in Computer Science — <time datetime="2023-9">September 2023</time> - <time
-                datetime="2027-5">May 2027</time></p>
-          </div>
-          <div class="content">
-            Relevant Coursework: Introduction to Programming and Problem Solving, Data Structures and Algorithms, Object-Oriented Programming, Data Analytics and Visualization, 
-            Data Analysis, Discrete Mathematics, Calculus I & II, Introduction to Engineering and Design
-          </div>
-        </div>
-      </div>
-      <div class="card card-gap">
-        <div class="card-content">
-          <div class="content">
-            <p class="title is-4">KR Mangalam World School, GK-2, New Delhi</p>
-            <p class="subtitle is-6">CBSE Board Curriculum — <time datetime="2018-3">March 2018</time> - <time
-                datetime="2022-5">May 2022</time></p>
-          </div>
-          <div class="content">
-            Subjects: Physics, Chemistry, Mathematics, and Computer Science<br>
-            SAT Score: 1510 | High School GPA: 3.84
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container">
-      <h1 class="title">Contact</h1>
-      <hr />
-      <nav class="level">
-        <div class="level-item has-text-centered">
-          <div>
-            <a href="https://github.com/maddii28" class="icon is-large">
-              <i class="fab fa-2x fa-github"></i>
-            </a>
-            <p class="heading"><a href="https://github.com/maddii28">github.com/maddii28</a></p>
-          </div>
-        </div>
-        <div class="level-item has-text-centered">
-          <div>
-            <a href="mailto:ms14565@nyu.edu" class="icon is-large">
-              <i class="fas fa-2x fa-envelope"></i>
-            </a>
-            <p class="heading"><a href="mailto:ms14565@nyu.edu">ms14565@nyu.edu</a></p>
-          </div>
-        </div>
-        <div class="level-item has-text-centered">
-          <div>
-            <a href="https://www.linkedin.com/in/maddhav-suneja" class="icon is-large">
-              <i class="fab fa-2x fa-linkedin-in"></i>
-            </a>
-            <p class="heading"><a href="https://www.linkedin.com/in/maddhav-suneja">linkedin</a></p>
-          </div>
-        </div>
-      </nav>
-    </div>
-  </section>
-
-  <!-- Modals -->
-  <div id="project-1-modal" class="modal">
-    <div class="modal-background"></div>
-    <div class="modal-card">
-      <header class="modal-card-head">
-        <p class="modal-card-title">Finlitify <a href="https://github.com/maddii28/finlitify" style="font-size: 15px; padding-left: 10px;">Github Repository</a></p>
-        <p></p> 
-        <button class="delete" aria-label="close"></button>
-      </header>
-      <section class="modal-card-body">
-
-        <div id="project-1-modal-carousel" class="carousel">
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/Fj3Yqb0G27c?si=pR0ew7KBDNErvAN3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
-
-        <div class="content">
-
-          <p>Finlitify utilizes Computer Adaptive Testing (CAT) and integrates the Wolfram Alpha Short Answers API to dynamically adjust quiz difficulty based on user performance. The platform personalizes financial literacy content across budgeting, savings, and taxes by adapting lessons and assessments to individual knowledge levels, and was awarded the <strong>Best Use of Wolfram Alpha in HackNYU 2023</strong>.</p>
-
-          <div class="tags">
-            <span class="tag">Python</span>
-            <span class="tag">Short Answers API</span>
-            <span class="tag">React</span>
-          </div>
-
-        </div>
-
-      </section>
-
-    </div>
+<div class="window">
+  <div class="titlebar">
+    <div class="dot dot-red"></div>
+    <div class="dot dot-yellow"></div>
+    <div class="dot dot-green"></div>
+    <span class="titlebar-label">maddhav@portfolio — zsh</span>
   </div>
 
-  <div id="project-2-modal" class="modal">
-    <div class="modal-background"></div>
-    <div class="modal-card">
-      <header class="modal-card-head">
-        <p class="modal-card-title">Lockabox</p>
-        <button class="delete" aria-label="close"></button>
-      </header>
-      <section class="modal-card-body">
+  <div class="terminal">
 
-        <div id="project-2-modal-carousel" class="carousel">
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/NKeqIUeh7Ts?si=m5mqs_xwQ7Hmc64r" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-          <figure class="image is-4by3 carousel-cell">
-            <img src="img/carousel/2.png" width ="465" height ="615">
-          </figure>
-        </div>
+    <!-- ═══════════════════════════════════════════
+         SECTION 0 — BOOT / BANNER
+         ═══════════════════════════════════════════ -->
+    <div class="section">
+      <div style="display:flex; align-items:flex-start; gap:28px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:220px;">
+          <pre class="banner">
+ __  __           _     _ _
+|  \/  | __ _  __| | __| | |__   __ ___   __
+| |\/| |/ _` |/ _` |/ _` | '_ \ / _` \ \ / /
+| |  | | (_| | (_| | (_| | | | | (_| |\ V /
+|_|  |_|\__,_|\__,_|\__,_|_| |_|\__,_| \_/
 
-        <div class="content">
+          </pre>
 
-          <p>Lockabox, developed as a class project for <strong>EG-UY 1004: Introduction to Engineering and Design</strong>, is a security device that integrates a Raspberry Pi, TensorFlow-powered text detection, solenoid locking mechanism, beeper, and LED-touch screen. It prevents distractions while ensuring safety through emergency access capabilities.</p>
-
-          <div class="tags">
-            <span class="tag">Python</span>
-            <span class="tag">TensorFlow</span>
-            <span class="tag">Raspberry Pi</span>
-            <span class="tag">Solenoid Lock</span>
+          <div class="sysinfo">
+            <div><span class="label">user      </span><span class="value">  Maddhav Suneja</span></div>
+            <div><span class="label">field     </span><span class="value">  Data Science &amp; AI</span></div>
+            <div><span class="label">status    </span><span class="value">  <span style="color:var(--green)">● available for opportunities</span></span></div>
+            <div><span class="label">uptime    </span><span class="value">  [YOUR AGE] years</span></div>
+            <div><span class="label">kernel    </span><span class="value">  curiosity 6.1.0-LTS</span></div>
           </div>
 
+          <div class="nav-hint">
+            jump to →
+            <span onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">about</span>
+            <span onclick="document.getElementById('skills').scrollIntoView({behavior:'smooth'})">skills</span>
+            <span onclick="document.getElementById('projects').scrollIntoView({behavior:'smooth'})">projects</span>
+            <span onclick="document.getElementById('education').scrollIntoView({behavior:'smooth'})">education</span>
+            <span onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">contact</span>
+          </div>
         </div>
 
-      </section>
+        <!-- ASCII PORTRAIT -->
+        <div style="flex-shrink:0;">
+          <div class="ascii-portrait">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@%..       ,#@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@+             .@@@@@@@@@@@@@@
+@@@@@@@@@@@@@       ,.       @@@@@@@@@@@@@
+@@@@@@@@@@@@@    ,=**%@@%@@= =@@@@@@@@@@@@
+@@@@@@@@@@@@@: ,@%-., -@#-+* #@@@@@@@@@@@@
+@@@@@@@@@@@@@=.@@+-,-,=%*.:+*@@@@@@@@@@@@@
+@@@@@@@@@@@@@=,@@@%@*:#%@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@#@@%*=,.,=*%@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@%=-:--,=++#@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@%#@%=:==:-***@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@:  +%=,.   .=@@@@@@@@@@@@@@@@@
+@@@@@@@@%:      :##=,.-*#:*@@@@@@@@@@@@@@@
+@@@#-.           .@@@@#-@.    -@@@@@@@@@@@
+@-                 @@@%*+=       +@@@@@@@@
++                  .@=*@@=        =@@@@@@@
+                    :@#@@@        .@@@@@@@
+                     +@@@@=       ,@@@@@@@
+                      *@@@#       .@@@@@@@
+                       @@@%        @@@@@@@
+                       ,@@%        @@@@@@@
+                        *@+        @@@@@@@
+                        .@,        @@@@@@@</div>
+          <div class="ascii-caption">// maddhav.jpg</div>
+        </div>
+
+      </div>
     </div>
-  </div> 
 
-  <footer class="footer">
-    <div class="content has-text-centered">
-      <p>
-        <a>
-          <strong>© 2024 Maddhav Suneja. All rights reserved.</strong></a>
-      </p>
+    <hr class="rule" />
+
+    <!-- ═══════════════════════════════════════════
+         SECTION 1 — ABOUT
+         ═══════════════════════════════════════════ -->
+    <div class="section" id="about">
+      <div class="prompt-line">
+        <span class="prompt-user">maddhav</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-path">~/about</span><span class="prompt-dollar">$</span>
+        <span class="prompt-cmd">cat intro.txt</span>
+      </div>
+      <div class="output">
+        <div class="ascii-wrap">
+          <!-- INTRO TEXT -->
+          <div class="ascii-side">
+            <p class="about-text" style="margin-bottom:12px;">
+              I'm <em>Maddhav Suneja</em>, a Computer Science major at NYU Tandon with minors in Mathematics and Data Science. I'm interested in the intersection of software, data, and real-world systems, and I enjoy building things that connect algorithms with practical applications.
+            </p>
+            <p class="about-text" style="margin-bottom:12px;">
+              I like working from the ground up — whether that's engineering systems in C++, building small end-to-end applications, or wrangling messy datasets <em>(un-normalized data gives me allergies)</em>. Lately I've been exploring machine learning, data pipelines, and system design, focusing on turning ideas into working tools.
+            </p>
+            <p class="about-text">
+              I'm currently looking for software engineering or machine learning internships where I can contribute, learn from experienced engineers, and keep building systems that combine code, data, and real-world impact.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
-  </footer>
 
-  <script src="js/bundle.js"></script>
-</body>
+    <hr class="rule" />
 
-</html>
+    <!-- ═══════════════════════════════════════════
+         SECTION 2 — SKILLS
+         ═══════════════════════════════════════════ -->
+    <div class="section" id="skills">
+      <div class="prompt-line">
+        <span class="prompt-user">maddhav</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-path">~/skills</span><span class="prompt-dollar">$</span>
+        <span class="prompt-cmd">ls -la</span>
+      </div>
+      <div class="output">
+        <div class="skills-grid">
+
+          <!-- ✏️  EDIT SKILL GROUPS BELOW -->
+
+          <div class="skill-group">
+            <div class="skill-cat">Languages</div>
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">SQL</span>
+            <span class="skill-tag">R</span>
+            <span class="skill-tag">Bash</span>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-cat">ML / AI</div>
+            <span class="skill-tag">PyTorch</span>
+            <span class="skill-tag">TensorFlow</span>
+            <span class="skill-tag">scikit-learn</span>
+            <span class="skill-tag">HuggingFace</span>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-cat">Data</div>
+            <span class="skill-tag">Pandas</span>
+            <span class="skill-tag">NumPy</span>
+            <span class="skill-tag">Spark</span>
+            <span class="skill-tag">dbt</span>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-cat">Infra / Cloud</div>
+            <span class="skill-tag">AWS</span>
+            <span class="skill-tag">Docker</span>
+            <span class="skill-tag">Git</span>
+            <span class="skill-tag">Linux</span>
+          </div>
+
+          <div class="skill-group">
+            <div class="skill-cat">Visualization</div>
+            <span class="skill-tag">Matplotlib</span>
+            <span class="skill-tag">Plotly</span>
+            <span class="skill-tag">Tableau</span>
+          </div>
+
+          <!-- ✏️  END SKILLS -->
+
+        </div>
+      </div>
+    </div>
+
+    <hr class="rule" />
+
+    <!-- ═══════════════════════════════════════════
+         SECTION 3 — PROJECTS
+         ═══════════════════════════════════════════ -->
+    <div class="section" id="projects">
+      <div class="prompt-line">
+        <span class="prompt-user">maddhav</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-path">~/projects</span><span class="prompt-dollar">$</span>
+        <span class="prompt-cmd">find . -name "*.project" | xargs cat</span>
+      </div>
+      <div class="output">
+
+        <!-- ✏️  PROJECT 1 -->
+        <div class="project">
+          <div class="project-header">
+            <span class="project-name">Finlitify</span>
+            <span class="project-tech">Python · Wolfram Short Answers API · React</span>
+            <a class="project-link" href="https://github.com/maddhav-suneja/finlitify" target="_blank">github ↗</a>
+          </div>
+          <p class="project-desc">A personalized financial literacy platform using Computer Adaptive Testing to dynamically adjust quiz difficulty based on user performance.</p>
+          <ul class="project-bullets">
+            <li>Integrated Wolfram Alpha Short Answers API to generate dynamic, knowledge-level-appropriate financial content across budgeting, savings, and taxes.</li>
+            <li>Built CAT logic that adapts lesson difficulty in real time based on individual user responses and performance patterns.</li>
+            <li>Awarded <em style="color:var(--yellow)">Best Use of Wolfram Alpha</em> at HackNYU out of 100+ participating teams.</li>
+          </ul>
+          <!-- ✏️  IMAGE -->
+          <div class="project-img-wrap">
+            <div class="project-img-bar">$ preview <span>finlitify.png</span></div>
+            <img src="data:image/png;base64,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"
+                 alt="Finlitify preview"
+                 onclick="openLightbox(this.src)" />
+          </div>
+        </div>
+
+        <!-- ✏️  PROJECT 2 -->
+        <div class="project">
+          <div class="project-header">
+            <span class="project-name">Project Two</span>
+            <span class="project-tech">Python · Spark · SQL</span>
+            <a class="project-link" href="#" target="_blank">github ↗</a>
+          </div>
+          <p class="project-desc">One-line description of what this project does and why it matters.</p>
+          <ul class="project-bullets">
+            <li>Key achievement or technical highlight</li>
+            <li>Another highlight</li>
+            <li>Impact or deployment detail</li>
+          </ul>
+          <!-- ✏️  IMAGE: replace src with your image path or URL. Remove this block if no image. -->
+          <div class="project-img-wrap">
+            <div class="project-img-bar">$ preview <span>project_two.png</span></div>
+            <img src="https://placehold.co/800x300/111/333?text=your+screenshot+here&font=monospace"
+                 alt="Project Two preview"
+                 onclick="openLightbox(this.src)" />
+          </div>
+        </div>
+
+        <!-- ✏️  PROJECT 3 — duplicate this block to add more -->
+        <div class="project">
+          <div class="project-header">
+            <span class="project-name">Project Three</span>
+            <span class="project-tech">R · scikit-learn · Plotly</span>
+            <a class="project-link" href="#" target="_blank">github ↗</a>
+          </div>
+          <p class="project-desc">One-line description of what this project does and why it matters.</p>
+          <ul class="project-bullets">
+            <li>Key achievement or technical highlight</li>
+            <li>Another highlight</li>
+            <li>Impact or deployment detail</li>
+          </ul>
+          <!-- ✏️  IMAGE: replace src with your image path or URL. Remove this block if no image. -->
+          <div class="project-img-wrap">
+            <div class="project-img-bar">$ preview <span>project_three.png</span></div>
+            <img src="https://placehold.co/800x300/111/333?text=your+screenshot+here&font=monospace"
+                 alt="Project Three preview"
+                 onclick="openLightbox(this.src)" />
+          </div>
+        </div>
+
+        <!-- ✏️  END PROJECTS -->
+
+      </div>
+    </div>
+
+    <hr class="rule" />
+
+    <!-- ═══════════════════════════════════════════
+         SECTION 4 — EDUCATION
+         ═══════════════════════════════════════════ -->
+    <div class="section" id="education">
+      <div class="prompt-line">
+        <span class="prompt-user">maddhav</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-path">~/education</span><span class="prompt-dollar">$</span>
+        <span class="prompt-cmd">cat credentials.log</span>
+      </div>
+      <div class="output">
+
+        <!-- ✏️  EDUCATION ENTRY 1 -->
+        <div class="edu-entry">
+          <div class="edu-header">
+            <span class="edu-school">University Name</span>
+            <span class="edu-year">20XX – 20XX</span>
+          </div>
+          <div class="edu-degree">B.Sc. / M.Sc. in [Your Degree]</div>
+          <div class="edu-detail">GPA: X.X &nbsp;·&nbsp; Relevant coursework: Machine Learning, Statistics, Algorithms</div>
+        </div>
+
+        <!-- ✏️  EDUCATION ENTRY 2 — remove or add as needed -->
+        <div class="edu-entry">
+          <div class="edu-header">
+            <span class="edu-school">Another Institution / Certification</span>
+            <span class="edu-year">20XX</span>
+          </div>
+          <div class="edu-degree">Certificate / Course name</div>
+          <div class="edu-detail">Issued by · Any relevant detail</div>
+        </div>
+
+        <!-- ✏️  END EDUCATION -->
+
+      </div>
+    </div>
+
+    <hr class="rule" />
+
+    <!-- ═══════════════════════════════════════════
+         SECTION 5 — CONTACT
+         ═══════════════════════════════════════════ -->
+    <div class="section" id="contact">
+      <div class="prompt-line">
+        <span class="prompt-user">maddhav</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-path">~/contact</span><span class="prompt-dollar">$</span>
+        <span class="prompt-cmd">cat reach_me.conf</span>
+      </div>
+      <div class="output">
+        <ul class="contact-list">
+
+          <!-- ✏️  EDIT CONTACT LINKS BELOW -->
+
+          <li>
+            <span class="c-label">email</span>
+            <a href="/cdn-cgi/l/email-protection#e29b8d9790a2878f838b8ecc818d8f"><span class="__cf_email__" data-cfemail="6e17011b1c2e0b030f0702400d0103">[email&#160;protected]</span></a>
+          </li>
+          <li>
+            <span class="c-label">linkedin</span>
+            <a href="https://linkedin.com/in/yourhandle" target="_blank">linkedin.com/in/yourhandle</a>
+          </li>
+          <li>
+            <span class="c-label">github</span>
+            <a href="https://github.com/yourhandle" target="_blank">github.com/yourhandle</a>
+          </li>
+          <li>
+            <span class="c-label">resume</span>
+            <a href="#" target="_blank">download PDF ↓</a>
+          </li>
+
+          <!-- ✏️  END CONTACT -->
+
+        </ul>
+      </div>
+    </div>
+
+    <!-- ── Blinking cursor at end ── -->
+    <div class="prompt-line" style="margin-top: 32px;">
+      <span class="prompt-user">maddhav</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-path">~</span><span class="prompt-dollar">$</span>
+      <span class="cursor"></span>
+    </div>
+
+  </div><!-- /terminal -->
+</div><!-- /window -->
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lightbox-close" onclick="closeLightbox()">× close</div>
+  <img id="lightbox-img" src="" alt="Project preview" onclick="event.stopPropagation()" />
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.a
