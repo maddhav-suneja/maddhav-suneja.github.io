@@ -182,6 +182,45 @@
     .project-bullets li { color: var(--fg); font-size: 13px; padding-left: 14px; position: relative; margin-bottom: 2px; }
     .project-bullets li::before { content: "–"; position: absolute; left: 0; color: var(--fg-dimmer); }
 
+    /* ── Project Tabs ── */
+    .tab-container {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .tab-btn {
+      background: #0a0a0a;
+      color: var(--fg-dim);
+      border: 1px solid var(--border);
+      padding: 6px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover {
+      color: var(--fg);
+      border-color: var(--fg-dim);
+    }
+    .tab-btn.active {
+      color: var(--bg);
+      background: var(--green);
+      border-color: var(--green);
+      font-weight: 700;
+    }
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     /* ── Project Image ── */
     .project-img-wrap {
       margin-top: 14px;
@@ -412,9 +451,6 @@
 
   <div class="terminal">
 
-    <!-- ═══════════════════════════════════════════
-         SECTION 0 — BOOT / BANNER
-         ═══════════════════════════════════════════ -->
     <div class="section">
       <div style="display:flex; align-items:flex-start; gap:28px; flex-wrap:wrap;">
         <div style="flex:1; min-width:220px;">
@@ -429,9 +465,9 @@
 
           <div class="sysinfo">
             <div><span class="label">user      </span><span class="value">  Maddhav Suneja</span></div>
-            <div><span class="label">field     </span><span class="value">  Data Science &amp; AI</span></div>
+            <div><span class="label">field     </span><span class="value">  SWE &amp; Data Science</span></div>
             <div><span class="label">status    </span><span class="value">  <span style="color:var(--green)">● available for opportunities</span></span></div>
-            <div><span class="label">uptime    </span><span class="value">  [YOUR AGE] years</span></div>
+            <div><span class="label">uptime    </span><span class="value" id="uptime-value">  calculating...</span></div>
             <div><span class="label">kernel    </span><span class="value">  curiosity 6.1.0-LTS</span></div>
           </div>
 
@@ -445,7 +481,6 @@
           </div>
         </div>
 
-        <!-- ASCII PORTRAIT -->
         <div style="flex-shrink:0;">
           <div class="ascii-portrait">@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@@@@@@@@@@@@@%..       ,#@@@@@@@@@@@@@@@
@@ -478,9 +513,6 @@
 
     <hr class="rule" />
 
-    <!-- ═══════════════════════════════════════════
-         SECTION 1 — ABOUT
-         ═══════════════════════════════════════════ -->
     <div class="section" id="about">
       <div class="prompt-line">
         <span class="prompt-user">maddhav</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-path">~/about</span><span class="prompt-dollar">$</span>
@@ -488,10 +520,9 @@
       </div>
       <div class="output">
         <div class="ascii-wrap">
-          <!-- INTRO TEXT -->
           <div class="ascii-side">
             <p class="about-text" style="margin-bottom:12px;">
-              I'm <em>Maddhav Suneja</em>, a Computer Science major at NYU Tandon with minors in Mathematics and Data Science. I'm interested in the intersection of software, data, and real-world systems, and I enjoy building things that connect algorithms with practical applications.
+              I'm <em>Maddhav Suneja</em>, a Computer Science major at NYU Tandon with minors in Mathematics and Quantum Computing. I'm interested in the intersection of software, data, and real-world systems, and I enjoy building things that connect algorithms with practical applications.
             </p>
             <p class="about-text" style="margin-bottom:12px;">
               I like working from the ground up — whether that's engineering systems in C++, building small end-to-end applications, or wrangling messy datasets <em>(un-normalized data gives me allergies)</em>. Lately I've been exploring machine learning, data pipelines, and system design, focusing on turning ideas into working tools.
@@ -506,9 +537,6 @@
 
     <hr class="rule" />
 
-    <!-- ═══════════════════════════════════════════
-         SECTION 2 — SKILLS
-         ═══════════════════════════════════════════ -->
     <div class="section" id="skills">
       <div class="prompt-line">
         <span class="prompt-user">maddhav</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-path">~/skills</span><span class="prompt-dollar">$</span>
@@ -516,8 +544,6 @@
       </div>
       <div class="output">
         <div class="skills-grid">
-
-          <!-- ✏️  EDIT SKILL GROUPS BELOW -->
 
           <div class="skill-group">
             <div class="skill-cat">Languages</div>
@@ -558,17 +584,12 @@
             <span class="skill-tag">Tableau</span>
           </div>
 
-          <!-- ✏️  END SKILLS -->
-
-        </div>
+          </div>
       </div>
     </div>
 
     <hr class="rule" />
 
-    <!-- ═══════════════════════════════════════════
-         SECTION 3 — PROJECTS
-         ═══════════════════════════════════════════ -->
     <div class="section" id="projects">
       <div class="prompt-line">
         <span class="prompt-user">maddhav</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-path">~/projects</span><span class="prompt-dollar">$</span>
@@ -576,8 +597,13 @@
       </div>
       <div class="output">
 
-        <!-- ✏️  PROJECT 1 -->
-        <div class="project">
+        <div class="tab-container">
+          <button class="tab-btn active" onclick="switchTab('data-ai', this)">Data / MLE</button>
+          <button class="tab-btn" onclick="switchTab('game-dev', this)">Game Dev</button>
+        </div>
+
+        <div id="data-ai" class="tab-content active">
+          <div class="project">
           <div class="project-header">
             <span class="project-name">Finlitify</span>
             <span class="project-tech">Python · Wolfram Short Answers API · React</span>
@@ -595,11 +621,9 @@
             <img src="data:image/png;base64,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"
                  alt="Finlitify preview"
                  onclick="openLightbox(this.src)" />
-          </div>
-        </div>
-
-        <!-- PROJECT 2 -->
-        <div class="project">
+           </div>
+         </div>
+          <div class="project">
           <div class="project-header">
             <span class="project-name">Assessing Professor Effectiveness (APE)</span>
             <span class="project-tech">Python · Pandas · NumPy · Scikit-Learn · Statistical Modeling</span>
@@ -618,14 +642,15 @@
                  alt="APE project preview"
                  onclick="openLightbox(this.src)" />
           </div>
-        </div>
+         </div>
 
-        <!-- PROJECT 3 -->
-        <div class="project">
+          <div class="project">
           <div class="project-header">
             <span class="project-name">Super Bowl 2026 Ad Impact Intelligence</span>
             <span class="project-tech">Python · HuggingFace Transformers · BERTopic · XGBoost · Dash/Flask</span>
             <a class="project-link" href="https://github.com/maddhav-suneja/SuperBowl2025" target="_blank">github ↗</a>
+            
+          </div>
           <ul class="project-bullets">
             <li>Built an end-to-end NLP pipeline including data collection, preprocessing, transformer-based sentiment/emotion classification, and BERTopic clustering to surface drivers of ad reception — humor, celebrity appearances, controversy.</li>
             <li>Developed XGBoost models to predict ad virality and engagement from early reactions.</li>
@@ -637,64 +662,112 @@
                  alt="Super Bowl Ad Impact Intelligence preview"
                  onclick="openLightbox(this.src)" />
           </div>
+         </div>
+         <div class="project">
+         <div class="project-header">
+           <span class="project-name">zAgent — AI Crypto Investment Advisor</span>
+           <span class="project-tech">Python · Flask · React · Ethereum · LLM Integration</span>
+           <a class="project-link" href="https://github.com/YOUR_REPO_LINK" target="_blank">devpost ↗</a>
+         </div>
+
+         <p class="project-desc">
+         AI-powered crypto investment platform that generates personalized portfolio strategies based on user risk tolerance using machine learning and blockchain-backed investment tracking.
+         </p>
+
+         <ul class="project-bullets">
+           <li>Built an AI-driven recommendation system at <em style="color:var(--yellow)">NYU Buildathon</em> that analyzes market trends and generates personalized crypto investment strategies.</li>
+           <li>Integrated Ethereum blockchain infrastructure to enable secure and transparent tracking of investment decisions.</li>
+           <li>Developed a full-stack platform using React and Flask to provide interactive risk profiling and strategy visualization.</li>
+         </ul>
+
+         <div class="project-img-wrap">
+           <div class="project-img-bar">$ preview <span>zagent_platform.png</span></div>
+           <img src="/Users/sabrina/Downloads/789.png"
+            alt="zAgent AI crypto investment platform preview"
+            onclick="openLightbox(this.src)" />
+          </div>
+         </div>
+           
+         
         </div>
 
-        <!-- ✏️  END PROJECTS -->
+        <div id="game-dev" class="tab-content">
+          
+          <div class="project">
+            <div class="project-header">
+              <span class="project-name">Star Wars AI Vs Human Rythmic Dance Off </span>
+              <span class="project-tech">C++ · Raylib · GLSL</span>
+              <a class="project-link" href="https://github.com/maddhav-suneja/GameProgram/tree/main/Project5" target="_blank">github ↗</a>
+            </div>
+            <p class="project-desc">Built a rhythm-based dance battle game where a player competes against an AI opponent using beat-synchronized arrow hitbox mechanics and dynamically updated lyrics.</p>
+            <ul class="project-bullets">
+              <li>Designed a 4-lane rhythm engine where directional arrows spawn and travel toward timing hitboxes to register beat-accurate player inputs.</li>
+              <li>Implemented timestamp-driven event scheduling to synchronize arrow spawns, lyric updates, and drum sound effects with background music.</li>
+              <li>Developed animation triggers tied to timing accuracy, enabling responsive character dance moves based on player performance.</li>
 
-      </div>
+            </ul>
+            <div class="project-img-wrap">
+            <div class="project-img-bar">$ preview <span>Star Wars AI Vs Human Rythmic Dance Off.png</span></div>
+            <img src="/Users/sabrina/Downloads/123.png"
+                 alt="Star Wars AI Vs Human Rythmic Dance Off preview"
+                 onclick="openLightbox(this.src)" />
+          </div>
+          </div>
+
+          <div class="project">
+            <div class="project-header">
+              <span class="project-name">Axe King Adventure - the platformer </span>
+              <span class="project-tech">C++ · Raylib · GLSL</span>
+              <a class="project-link" href="https://github.com/maddhav-suneja/GameProgram/tree/main/Project4" target="_blank">github ↗</a>
+            </div>
+            <p class="project-desc">Built a multi-level 2D platformer featuring animated AI enemies with distinct behaviors and a portal-based level progression system.</p>
+            <ul class="project-bullets">
+              <li>Developed a 3-level platformer architecture with seamless progression through portal-based level transitions.</li>
+              <li>Implemented animated AI agents with distinct behavior patterns including Follower, Flyer, and Wanderer enemies for each layer.</li>
+              <li>Built a collision and interaction system to handle player movement, obstacles, enemies, and portal triggers.</li>
+            </ul>
+            <div class="project-img-wrap">
+            <div class="project-img-bar">$ preview <span>Axe King Adventure.png</span></div>
+            <img src="/Users/sabrina/Downloads/456.png"
+                 alt="Axe King Adventure - the platformer preview"
+                 onclick="openLightbox(this.src)" />
+          </div>
+          </div>
+
+
+        </div> </div>
     </div>
 
     <hr class="rule" />
 
-    <!-- ═══════════════════════════════════════════
-         SECTION 4 — EDUCATION
-         ═══════════════════════════════════════════ -->
     <div class="section" id="education">
       <div class="prompt-line">
         <span class="prompt-user">maddhav</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-path">~/education</span><span class="prompt-dollar">$</span>
-        <span class="prompt-cmd">cat credentials.log</span>
+        <span class="prompt-cmd">cat university.txt</span>
       </div>
       <div class="output">
-
-        <!-- ✏️  EDUCATION ENTRY 1 -->
         <div class="edu-entry">
           <div class="edu-header">
-            <span class="edu-school">University Name</span>
-            <span class="edu-year">20XX – 20XX</span>
+            <span class="edu-school">New York University </span>
+            <span class="edu-year">2023 — 2027</span>
           </div>
-          <div class="edu-degree">B.Sc. / M.Sc. in [Your Degree]</div>
-          <div class="edu-detail">GPA: X.X &nbsp;·&nbsp; Relevant coursework: Machine Learning, Statistics, Algorithms</div>
+          <div class="edu-degree">B.S. in Computer Science</div>
+          <div class="edu-detail">Minors: Mathematics &amp; Quantum Computing</div>
+          <div class="edu-degree">Coursework: Intro to Programming, Data Structures n Algorithms, Object Oriented Programming, Principle of Data Science II, Intro to Machine Learning, Intro to Game Programming, Intro to Databases, Computer Architecture, Operating Systems</div>
+          <div class="edu-degree">Certifications: <em style="color:var(--yellow)">CodePath TIP 103 Advanced Technical Interview Prep, NYU Data Science Bootcamp</em></div>
         </div>
-
-        <!-- ✏️  EDUCATION ENTRY 2 — remove or add as needed -->
-        <div class="edu-entry">
-          <div class="edu-header">
-            <span class="edu-school">Another Institution / Certification</span>
-            <span class="edu-year">20XX</span>
-          </div>
-          <div class="edu-degree">Certificate / Course name</div>
-          <div class="edu-detail">Issued by · Any relevant detail</div>
-        </div>
-
-        <!-- ✏️  END EDUCATION -->
-
       </div>
     </div>
 
     <hr class="rule" />
 
-    <!-- ═══════════════════════════════════════════
-         SECTION 5 — CONTACT
-         ═══════════════════════════════════════════ -->
     <div class="section" id="contact">
       <div class="prompt-line">
         <span class="prompt-user">maddhav</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-path">~/contact</span><span class="prompt-dollar">$</span>
-        <span class="prompt-cmd">cat reach_me.conf</span>
+        <span class="prompt-cmd">ping contact_links</span>
       </div>
       <div class="output">
         <ul class="contact-list">
-
-          <!-- ✏️  EDIT CONTACT LINKS BELOW -->
 
           <li>
             <span class="c-label">email</span>
@@ -706,30 +779,23 @@
           </li>
           <li>
             <span class="c-label">github</span>
-            <a href="https://github.com/yourhandle" target="_blank">github.com/maddhav-suneja</a>
+            <a href="https://github.com/maddhav-suneja" target="_blank">github.com/maddhav-suneja</a>
           </li>
           <li>
             <span class="c-label">resume</span>
             <a href="#" target="_blank">download PDF ↓</a>
           </li>
 
-          <!-- ✏️  END CONTACT -->
-
-        </ul>
+          </ul>
       </div>
     </div>
 
-    <!-- ── Blinking cursor at end ── -->
     <div class="prompt-line" style="margin-top: 32px;">
       <span class="prompt-user">maddhav</span><span class="prompt-at">@</span><span class="prompt-host">portfolio</span><span class="prompt-colon">:</span><span class="prompt-path">~</span><span class="prompt-dollar">$</span>
       <span class="cursor"></span>
     </div>
 
-  </div><!-- /terminal -->
-</div><!-- /window -->
-
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  </div></div><div class="lightbox" id="lightbox" onclick="closeLightbox()">
   <div class="lightbox-close" onclick="closeLightbox()">× close</div>
   <img id="lightbox-img" src="" alt="Project preview" onclick="event.stopPropagation()" />
 </div>
@@ -737,4 +803,57 @@
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   function openLightbox(src) {
     document.getElementById('lightbox-img').src = src;
-    document.getElementById('lightbox').classList.a
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+  function switchTab(tabId, btnElement) {
+    // Hide all tab contents
+    const contents = document.querySelectorAll('.tab-content');
+    contents.forEach(content => content.classList.remove('active'));
+    
+    // Remove active class from all buttons
+    const buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    
+    // Show the selected tab and highlight the clicked button
+    document.getElementById(tabId).classList.add('active');
+    btnElement.classList.add('active');
+  }
+
+  function calculateUptime() {
+    const birthDate = new Date('2004-05-28');
+    const today = new Date();
+    
+    let years = today.getFullYear() - birthDate.getFullYear();
+    let months = today.getMonth() - birthDate.getMonth();
+    let days = today.getDate() - birthDate.getDate();
+    
+    // Adjust for negative days
+    if (days < 0) {
+      months--;
+      const prevMonth = new Date(today.getFullYear(), today.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+    
+    // Adjust for negative months
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+    
+    // Calculate total days
+    const totalDays = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24));
+    
+    const uptimeText = `  ${years} years ${months} months ${days} days`;
+    document.getElementById('uptime-value').textContent = uptimeText;
+  }
+  
+  // Calculate uptime when page loads
+  window.addEventListener('load', calculateUptime);
+</script>
+
+</body>
+</html>
